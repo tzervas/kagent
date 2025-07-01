@@ -140,10 +140,21 @@ RUN curl -LO https://github.com/derailed/k9s/releases/download/v${TOOLS_K9S_VERS
 RUN curl -Lo /usr/local/bin/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl" \
     && chmod +x /usr/local/bin/kubectl
 
+# Install shell enhancements and setup
 RUN sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
-    sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes \
+    && sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes \
     && mkdir -p /root/.config \
     && git config --global core.excludesfile /root/.gitignore_global \
-    && echo "**/.idea/" > /root/.gitignore_global
+    && echo "**/.idea/" > /root/.gitignore_global \
+    && echo "**/.vscode/" >> /root/.gitignore_global
+
+# Install pre-commit using uv for cross-platform compatibility
+RUN uv tool install pre-commit
+
+# Set up cross-platform git configuration for signing
+RUN git config --global init.defaultBranch main \
+    && git config --global core.autocrlf input \
+    && git config --global core.eol lf \
+    && git config --global pull.rebase false
 
 ENTRYPOINT ["zsh"]

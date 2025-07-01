@@ -1,0 +1,79 @@
+# Pre-commit configuration for Kagent - Security Scanning Focus
+# Mirrors image-scan.yaml workflow with comprehensive security checks
+repos:
+  # Basic pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-yaml
+      - id: check-json
+
+  # Advanced Security Scanning - mirrors image-scan workflow
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        exclude: package-lock.json
+
+  # Docker security scanning - mirrors image vulnerability scanning
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint
+        files: 'Dockerfile.*'
+        args: ['--error', 'DL3008,DL3009,DL3015,DL3025']
+
+  # Local security tools - mirrors image-scan.yaml Trivy usage
+  - repo: local
+    hooks:
+      # Gitleaks for comprehensive secret scanning
+      - id: gitleaks
+        name: gitleaks secret scan (mirrors image security)
+        entry: gitleaks detect --verbose --source . --exit-code 1
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+
+      # Trivy filesystem scan - mirrors image vulnerability scanning
+      - id: trivy-fs
+        name: trivy filesystem scan (mirrors image-scan workflow)
+        entry: trivy fs --exit-code 1 --severity HIGH,CRITICAL --quiet .
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+
+      # Trivy config scan for IaC security
+      - id: trivy-config
+        name: trivy config scan (IaC security)
+        entry: trivy config --exit-code 1 --severity HIGH,CRITICAL .
+        language: system
+        files: '\.(yaml|yml|json|tf|dockerfile)$'
+        pass_filenames: false
+
+      # Docker image security scan before build
+      - id: docker-security-scan
+        name: docker image security pre-scan
+        entry: scripts/hooks/docker-security-scan.sh
+        language: script
+        files: 'Dockerfile.*'
+        pass_filenames: false
+
+      # Kubernetes security checks
+      - id: kube-security
+        name: kubernetes manifest security scan
+        entry: scripts/hooks/kube-security-scan.sh
+        language: script
+        files: '(helm/.*|.*k8s.*)\.(yaml|yml)$'
+        pass_filenames: false
+
+      # Dependency vulnerability check
+      - id: dependency-scan
+        name: dependency vulnerability scan
+        entry: scripts/hooks/dependency-scan.sh
+        language: script
+        files: '(go\.mod|package\.json|requirements\.txt|Cargo\.toml)$'
+        pass_filenames: false
