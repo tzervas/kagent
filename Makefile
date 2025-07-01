@@ -64,6 +64,7 @@ TOOLS_KUBECTL_VERSION ?= 1.33.2
 TOOLS_HELM_VERSION ?= 3.18.3
 TOOLS_PYTHON_VERSION ?= 3.12
 TOOLS_GRAFANA_MCP_VERSION ?= 0.5.0
+TOOLS_GITLEAKS_VERSION ?= 8.21.2
 
 # build args
 TOOLS_IMAGE_BUILD_ARGS =  --build-arg VERSION=$(VERSION)
@@ -80,6 +81,7 @@ TOOLS_IMAGE_BUILD_ARGS += --build-arg TOOLS_ARGO_ROLLOUTS_VERSION=$(TOOLS_ARGO_R
 TOOLS_IMAGE_BUILD_ARGS += --build-arg TOOLS_KUBECTL_VERSION=$(TOOLS_KUBECTL_VERSION)
 TOOLS_IMAGE_BUILD_ARGS += --build-arg TOOLS_HELM_VERSION=$(TOOLS_HELM_VERSION)
 TOOLS_IMAGE_BUILD_ARGS += --build-arg TOOLS_GRAFANA_MCP_VERSION=$(TOOLS_GRAFANA_MCP_VERSION)
+TOOLS_IMAGE_BUILD_ARGS += --build-arg TOOLS_GITLEAKS_VERSION=$(TOOLS_GITLEAKS_VERSION)
 
 
 
@@ -359,6 +361,20 @@ kagent-addon-install:
 	kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=prometheus -n kagent --timeout=60s
 	#port forward grafana service
 	kubectl port-forward svc/grafana 3000:3000 -n kagent
+
+.PHONY: install-gitleaks
+install-gitleaks:
+	@echo "Installing gitleaks $(TOOLS_GITLEAKS_VERSION)..."
+	@if command -v gitleaks >/dev/null 2>&1; then \
+		echo "gitleaks is already installed: $$(gitleaks version)"; \
+	else \
+		echo "Installing gitleaks $(TOOLS_GITLEAKS_VERSION)..."; \
+		curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v$(TOOLS_GITLEAKS_VERSION)/gitleaks_$(TOOLS_GITLEAKS_VERSION)_linux_x64.tar.gz | tar -xz -C /tmp && sudo mv /tmp/gitleaks /usr/local/bin/; \
+	fi
+
+.PHONY: install-dev-tools
+install-dev-tools: install-gitleaks
+	@echo "Development tools installation complete"
 
 .PHONY: open-dev-container
 open-dev-container:
