@@ -8,7 +8,6 @@ When making changes to `kagent`, the most important thing is to figure out which
 - [go](go): Contains the code for the kubernetes controller, and the CLI.
 - [ui](ui): Contains the code for the web UI.
 
-
 ## How to run everything locally
 
 Running outside Kubernetes is mostly meant for development/testing. You'll still need to set up the Kubernetes cluster.
