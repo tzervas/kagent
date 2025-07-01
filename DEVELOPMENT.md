@@ -101,3 +101,17 @@ kubectl port-forward svc/app 8001:80
 ```
 
 Then open your browser and go to `http://localhost:8001`.
+
+## Enhanced Development Security Features
+
+For teams interested in enhanced local development security features, see the
+[Enhanced Development Security Features](docs/enhanced-dev-security.md) documentation.
+These optional security enhancements include:
+
+- Advanced secret detection and scanning
+- Vulnerability scanning for dependencies
+- Commit quality and GPG signature verification
+- Enhanced development workflow automation
+
+The enhanced security features are available in the `feature/enhanced-dev-security`
+branch and can be adopted optionally without affecting existing CI workflows.
