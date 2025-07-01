@@ -1,0 +1,153 @@
+# Pre-commit configuration for Kagent
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  # Basic pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-json
+      - id: pretty-format-json
+        args: ['--autofix']
+      - id: mixed-line-ending
+
+  # Go hooks - mirrors CI go-unit-tests workflow
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
+    hooks:
+      - id: go-fmt
+        files: 'go/.*\.go$'
+      - id: go-imports
+        files: 'go/.*\.go$'
+      - id: go-mod-tidy
+        files: 'go/(go\.mod|go\.sum|.*\.go)$'
+      - id: go-vet
+        files: 'go/.*\.go$'
+      - id: golangci-lint
+        files: 'go/.*\.go$'
+
+  # Python hooks - mirrors lint-python workflow
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        files: 'python/.*\.py$'
+        args: [--fix]
+      - id: ruff-format
+        files: 'python/.*\.py$'
+
+  # MyPy type checking for Python
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        files: 'python/.*\.py$'
+        additional_dependencies: [types-requests, types-PyYAML]
+        args: [--ignore-missing-imports, --follow-imports=silent]
+
+  # UI/JavaScript hooks - mirrors ui-tests workflow
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.15.0
+    hooks:
+      - id: eslint
+        files: 'ui/.*\.(js|jsx|ts|tsx)$'
+        additional_dependencies:
+          - eslint@^8.0.0
+          - '@typescript-eslint/parser'
+          - '@typescript-eslint/eslint-plugin'
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        files: 'ui/.*\.(js|jsx|ts|tsx|json|css|scss|html)$'
+
+  # Docker and Kubernetes
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint
+        files: 'Dockerfile.*'
+
+  # Helm - mirrors helm-unit-tests workflow
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.23
+    hooks:
+      - id: helmlint
+        files: 'helm/.*\.(yaml|yml)$'
+
+  # Security scanning
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        exclude: package-lock.json
+
+  # Gitleaks for secret scanning (using local installation)
+  - repo: local
+    hooks:
+      - id: gitleaks
+        name: gitleaks secret scan
+        entry: gitleaks detect --verbose --source . --exit-code 1
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+
+  # Trivy for vulnerability scanning (using local installation)
+  - repo: local
+    hooks:
+      - id: trivy-fs
+        name: trivy filesystem scan
+        entry: trivy fs --exit-code 1 --severity HIGH,CRITICAL .
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+
+  # Conventional Commits
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  # Markdown
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.42.0
+    hooks:
+      - id: markdownlint
+        files: '\.md$'
+        args: ['--fix']
+
+  # Local hooks for custom checks
+  - repo: local
+    hooks:
+      # GPG signing verification
+      - id: verify-gpg-signature
+        name: Verify GPG signature
+        entry: scripts/hooks/verify-gpg-signature.sh
+        language: script
+        stages: [pre-commit]
+        pass_filenames: false
+
+      # Local test runner
+      - id: run-local-tests
+        name: Run local test suite
+        entry: scripts/hooks/run-local-tests.sh
+        language: script
+        stages: [pre-push]
+        pass_filenames: false
+
+      # Version consistency check
+      - id: version-consistency
+        name: Check version consistency
+        entry: scripts/hooks/check-version-consistency.sh
+        language: script
+        files: '(VERSION|package\.json|Chart\.yaml|go\.mod)$'
+        pass_filenames: false
