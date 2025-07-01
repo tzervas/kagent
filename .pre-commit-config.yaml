@@ -1,6 +1,7 @@
-# Pre-commit configuration for Kagent
+# Pre-commit configuration for Kagent - Enhanced Development Security
+# This configuration includes all hooks for comprehensive development workflow
+# with enhanced security features.
 # See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
 repos:
   # Basic pre-commit hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
