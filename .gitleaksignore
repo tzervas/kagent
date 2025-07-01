@@ -1,0 +1,20 @@
+# Gitleaks ignore file for test data and known false positives
+# Test data with base64 encoded test secrets - these are not real secrets
+go/controller/internal/autogen/testdata/inputs/agent_with_cross_ns_agent.yaml:generic-api-key:11
+go/controller/internal/autogen/testdata/inputs/agent_with_cross_ns_agent.yaml:kubernetes-secret-yaml:6
+go/controller/internal/autogen/testdata/inputs/agent_with_cross_ns_resources.yaml:generic-api-key:11
+go/controller/internal/autogen/testdata/inputs/agent_with_cross_ns_resources.yaml:kubernetes-secret-yaml:6
+go/controller/internal/autogen/testdata/inputs/agent_with_cross_ns_resources.yaml:kubernetes-secret-yaml:13
+go/controller/internal/httpserver/handlers/memory_test.go:generic-api-key:111
+go/controller/internal/autogen/testdata/inputs/agent_with_builtin_tools.yaml:generic-api-key:11
+go/controller/internal/autogen/testdata/inputs/agent_with_builtin_tools.yaml:kubernetes-secret-yaml:6
+go/controller/internal/autogen/testdata/inputs/agent_with_nested_agent.yaml:generic-api-key:11
+go/controller/internal/autogen/testdata/inputs/agent_with_nested_agent.yaml:kubernetes-secret-yaml:6
+go/controller/internal/autogen/testdata/inputs/basic_agent.yaml:kubernetes-secret-yaml:6
+go/controller/internal/autogen/testdata/inputs/basic_agent.yaml:generic-api-key:11
+go/controller/internal/autogen/testdata/inputs/agent_with_memory.yaml:generic-api-key:11
+go/controller/internal/autogen/testdata/inputs/agent_with_memory.yaml:kubernetes-secret-yaml:6
+go/controller/internal/autogen/testdata/inputs/agent_with_memory.yaml:kubernetes-secret-yaml:13
+go/controller/internal/autogen/testdata/inputs/anthropic_agent.yaml:kubernetes-secret-yaml:6
+go/controller/internal/autogen/testdata/inputs/anthropic_agent.yaml:generic-api-key:11
+go/test/e2e/manifests/kubeobjects.yaml:kubernetes-secret-yaml:2

@@ -1,9 +1,11 @@
-# Pre-commit configuration for Kagent - Enhanced Development Security
-# This configuration includes all hooks for comprehensive development workflow
-# with enhanced security features.
+# Pre-commit configuration for Kagent - Enhanced Development Security Features
+# This configuration includes ONLY enhanced security and development quality hooks.
+# CI-mirror hooks (Go, Python, JavaScript, Helm linting) have been removed to avoid
+# duplication with existing CI workflows. These hooks focus on security, commit quality,
+# and enhanced development practices.
 # See https://pre-commit.com for more information
 repos:
-  # Basic pre-commit hooks
+  # Essential file quality hooks (keep minimal set)
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
@@ -14,75 +16,7 @@ repos:
       - id: check-case-conflict
       - id: check-merge-conflict
       - id: check-symlinks
-      - id: check-json
-      - id: pretty-format-json
-        args: ['--autofix']
       - id: mixed-line-ending
-
-  # Go hooks - mirrors CI go-unit-tests workflow
-  - repo: https://github.com/dnephin/pre-commit-golang
-    rev: v0.5.1
-    hooks:
-      - id: go-fmt
-        files: 'go/.*\.go$'
-      - id: go-imports
-        files: 'go/.*\.go$'
-      - id: go-mod-tidy
-        files: 'go/(go\.mod|go\.sum|.*\.go)$'
-      - id: go-vet
-        files: 'go/.*\.go$'
-      - id: golangci-lint
-        files: 'go/.*\.go$'
-
-  # Python hooks - mirrors lint-python workflow
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
-    hooks:
-      - id: ruff
-        files: 'python/.*\.py$'
-        args: [--fix]
-      - id: ruff-format
-        files: 'python/.*\.py$'
-
-  # MyPy type checking for Python
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
-    hooks:
-      - id: mypy
-        files: 'python/.*\.py$'
-        additional_dependencies: [types-requests, types-PyYAML]
-        args: [--ignore-missing-imports, --follow-imports=silent]
-
-  # UI/JavaScript hooks - mirrors ui-tests workflow
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.15.0
-    hooks:
-      - id: eslint
-        files: 'ui/.*\.(js|jsx|ts|tsx)$'
-        additional_dependencies:
-          - eslint@^8.0.0
-          - '@typescript-eslint/parser'
-          - '@typescript-eslint/eslint-plugin'
-
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
-    hooks:
-      - id: prettier
-        files: 'ui/.*\.(js|jsx|ts|tsx|json|css|scss|html)$'
-
-  # Docker and Kubernetes
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
-    hooks:
-      - id: hadolint
-        files: 'Dockerfile.*'
-
-  # Helm - mirrors helm-unit-tests workflow
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.23
-    hooks:
-      - id: helmlint
-        files: 'helm/.*\.(yaml|yml)$'
 
   # Security scanning
   - repo: https://github.com/Yelp/detect-secrets
