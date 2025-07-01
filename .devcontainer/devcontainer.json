@@ -1,20 +1,22 @@
 {
-  "name": "kagent-dev-container",
   "build": {
-    "dockerfile": "Dockerfile",
     "args": {
       "TOOLS_GO_VERSION": "1.24.3",
-      "TOOLS_NODE_VERSION": "22.15.0",
-      "TOOLS_UV_VERSION": "0.7.2",
+      "TOOLS_ISTIO_VERSION": "1.26.0",
       "TOOLS_K9S_VERSION": "0.50.4",
       "TOOLS_KIND_VERSION": "0.27.0",
-      "TOOLS_ISTIO_VERSION": "1.26.0",
-      "TOOLS_KUBECTL_VERSION": "1.33.4"
-    }
+      "TOOLS_KUBECTL_VERSION": "1.33.4",
+      "TOOLS_NODE_VERSION": "20.18.0",
+      "TOOLS_UV_VERSION": "0.7.2"
+    },
+    "dockerfile": "Dockerfile"
   },
-  "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
-    "ghcr.io/mpriscella/features/kind:1": {}
+  "containerEnv": {
+    "COMPOSE_DOCKER_CLI_BUILD": "1",
+    "DOCKER_BUILDKIT": "1",
+    "LANG": "C.UTF-8",
+    "PYTHONUNBUFFERED": "1",
+    "TZ": "UTC"
   },
   "customizations": {
     "vscode": {
@@ -26,32 +28,84 @@
         "dbaeumer.vscode-eslint",
         "ms-azuretools.vscode-docker",
         "ms-vscode.makefile-tools",
-        "ms-vscode.vscode-go",
         "ms-python.python",
         "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
         "ms-toolsai.jupyter",
-        "ms-vscode.makefile-tools",
         "ms-remote.remote-containers",
         "ms-vscode.vscode-typescript-next",
-        "ms-azuretools.vscode-containers",
-        "ms-windows-ai-studio.windows-ai-studio",
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "Catppuccin.catppuccin-vsc",
-        "Catppuccin.catppuccin-vsc-icons"
-      ]
+        "Catppuccin.catppuccin-vsc-icons",
+        "timonwong.shellcheck",
+        "foxundermoon.shell-format"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "git.enableCommitSigning": true,
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.formatting.provider": "black",
+        "python.linting.enabled": true,
+        "python.linting.ruffEnabled": true,
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      }
     }
   },
-
-  //user settings
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {
+      "dockerDashComposeVersion": "v2",
+      "moby": true
+    }
+  },
+  "forwardPorts": [
+    8082,
+    3000,
+    8080
+  ],
+  "initializeCommand": "echo 'Initializing cross-platform devcontainer for Windows (WSL), macOS, and Linux...'",
+  "mounts": [
+    {
+      "source": "/var/run/docker.sock",
+      "target": "/var/run/docker.sock",
+      "type": "bind"
+    },
+    {
+      "consistency": "cached",
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig",
+      "target": "/tmp/gitconfig",
+      "type": "bind"
+    },
+    {
+      "consistency": "cached",
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.ssh",
+      "target": "/tmp/.ssh",
+      "type": "bind"
+    }
+  ],
+  "name": "kagent-dev-container",
+  "onCreateCommand": {
+    "install-precommit": "uv tool install pre-commit",
+    "setup-git": "if [ -f /tmp/gitconfig ]; then cp /tmp/gitconfig ~/.gitconfig; fi",
+    "setup-ssh": "if [ -d /tmp/.ssh ]; then cp -r /tmp/.ssh ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/* 2>/dev/null || true; fi"
+  },
+  "portsAttributes": {
+    "3000": {
+      "label": "UI Development",
+      "onAutoForward": "openPreview"
+    },
+    "8080": {
+      "label": "Tools Server",
+      "onAutoForward": "notify"
+    },
+    "8082": {
+      "label": "Kagent API",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "make print-tools-versions && pre-commit install && echo 'Devcontainer ready for cross-platform development!'",
   "remoteUser": "root",
-
-  //forward the following ports
-  "forwardPorts": [8082],
-
-  //mount docker directly on the host
-  "mounts": ["source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"],
-
-  // Uncomment the next line to run commands after the container is created.
-  "postCreateCommand": "make print-tools-versions delete-kind-cluster create-kind-cluster"
+  "shutdownAction": "stopContainer",
+  "workspaceFolder": "/workspaces/kagent"
 }
