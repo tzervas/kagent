@@ -148,8 +148,8 @@ RUN sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/ins
     && echo "**/.idea/" > /root/.gitignore_global \
     && echo "**/.vscode/" >> /root/.gitignore_global
 
-# Install pre-commit using uv for cross-platform compatibility
-RUN uv tool install pre-commit
+# Install pre-commit using uv for cross-platform compatibility (pinned version for reproducibility)
+RUN uv tool install pre-commit==3.7.0
 
 # Set up cross-platform git configuration for signing
 RUN git config --global init.defaultBranch main \
