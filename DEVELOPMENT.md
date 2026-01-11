@@ -8,7 +8,6 @@ When making changes to `kagent`, the most important thing is to figure out which
 - [go](go): Contains the code for the kubernetes controller, and the CLI.
 - [ui](ui): Contains the code for the web UI.
 
-
 ## How to run everything locally
 
 Running outside Kubernetes is mostly meant for development/testing. You'll still need to set up the Kubernetes cluster.
@@ -101,3 +100,17 @@ kubectl port-forward svc/app 8001:80
 ```
 
 Then open your browser and go to `http://localhost:8001`.
+
+## Enhanced Development Security Features
+
+For teams interested in enhanced local development security features, see the
+[Enhanced Development Security Features](docs/enhanced-dev-security.md) documentation.
+These optional security enhancements include:
+
+- Advanced secret detection and scanning
+- Vulnerability scanning for dependencies
+- Commit quality and GPG signature verification
+- Enhanced development workflow automation
+
+The enhanced security features are available in the `feature/enhanced-dev-security`
+branch and can be adopted optionally without affecting existing CI workflows.
