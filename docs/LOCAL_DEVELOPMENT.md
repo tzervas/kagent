@@ -56,14 +56,53 @@ Our pre-commit configuration mirrors the CI/CD workflows to catch issues early:
 - **Comprehensive Testing**: Runs full test suite mirroring CI
 - **Version Consistency**: Checks version alignment across files
 
-## Manual Testing
+## Test Automation
 
-### Run All Tests Locally
+### Local Test Suite (Mirrors CI Workflows)
+
+Our local test suite mirrors all CI workflows for comprehensive testing:
 
 ```bash
-# Mirrors the complete CI test suite
+# Run complete test suite mirroring CI
 ./scripts/hooks/run-local-tests.sh
 ```
+
+**Test Coverage:**
+
+- **Go Unit Tests**: Mirrors `go-unit-tests` CI workflow
+- **Python Linting**: Mirrors `lint-python` CI workflow
+- **UI Tests**: Mirrors `ui-tests` CI workflow
+- **Helm Tests**: Mirrors `helm-unit-tests` CI workflow
+- **Security Scans**: Mirrors `image-scan` security checks
+- **Build Tests**: Mirrors CI build workflow
+
+### Local E2E Testing (Mirrors CI E2E Workflow)
+
+Run end-to-end tests locally using Kind:
+
+```bash
+# Complete E2E test mirroring CI e2e-test workflow
+./scripts/test/run-e2e-local.sh
+```
+
+**E2E Test Process:**
+
+1. Creates local Kind cluster
+2. Builds and loads Docker images
+3. Installs Kagent via Helm
+4. Runs API connectivity tests
+5. Performs health checks
+6. Automatic cleanup
+
+**Prerequisites:**
+
+- Docker
+- Kind
+- kubectl
+- Helm
+- Make
+
+### Manual Testing Components
 
 ### Run Specific Components
 
