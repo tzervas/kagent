@@ -19,7 +19,7 @@ jobs:
           - ui
           - app
           - tools
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     permissions:
       contents: read
       packages: write
@@ -54,7 +54,7 @@ jobs:
   push-helm-chart:
     needs:
     - push-images
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     permissions:
       contents: read
       packages: write
@@ -84,7 +84,7 @@ jobs:
     # and build the CLI beforehand.
     needs:
     - push-helm-chart
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     permissions:
       contents: write
     steps:
