@@ -2,6 +2,16 @@ name: CI Build
 
 # Manual only — no push/pull_request CI triggers
 on:
+  push:
+    branches:
+      - main
+      - dev
+      - develop
+  pull_request:
+    branches:
+      - main
+      - dev
+      - develop
   workflow_dispatch:
 
 jobs:
@@ -15,7 +25,7 @@ jobs:
           - ui
           - app
           - cli
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
 
     steps:
       - name: Checkout repository
@@ -49,7 +59,7 @@ jobs:
   e2e-test:
     env:
       VERSION: v0.0.1-test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -85,7 +95,7 @@ jobs:
 
 
   go-unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -102,7 +112,7 @@ jobs:
           go test -skip 'TestInvokeAPI|TestE2E|TestAutogenClient' -v ./...
 
   helm-unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -125,7 +135,7 @@ jobs:
           helm unittest helm/kagent
 
   ui-tests:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

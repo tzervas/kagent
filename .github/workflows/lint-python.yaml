@@ -2,10 +2,20 @@ name: Lint Python Code
 
 # Manual only — no push/pull_request CI triggers
 on:
+  push:
+    branches:
+      - main
+      - dev
+      - develop
+  pull_request:
+    branches:
+      - main
+      - dev
+      - develop
   workflow_dispatch:
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
 
     steps:
       - name: Checkout repository

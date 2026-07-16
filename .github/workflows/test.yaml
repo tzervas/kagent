@@ -1,13 +1,23 @@
 name: Test
 
 on:
+  push:
+    branches:
+      - main
+      - dev
+      - develop
+  pull_request:
+    branches:
+      - main
+      - dev
+      - develop
   workflow_dispatch:
 
 jobs:
   e2e-test:
     env:
       VERSION: v0.0.1-test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, podman]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
