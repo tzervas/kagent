@@ -1,9 +1,7 @@
 name: Tag and Push 
 
+# Manual only — no push/pull_request CI triggers
 on:
-  push:
-    tags:
-    - "v*.*.*"
   workflow_dispatch:
     inputs:
       version:

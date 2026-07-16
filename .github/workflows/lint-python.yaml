@@ -1,12 +1,8 @@
 name: Lint Python Code
 
+# Manual only — no push/pull_request CI triggers
 on:
-  pull_request:
-    paths:
-      - '**/*.py'  # Only trigger on changes to Python files
-      - 'python/pyproject.toml'
-      - 'python/uv.lock'
-
+  workflow_dispatch:
 jobs:
   lint:
     runs-on: ubuntu-latest

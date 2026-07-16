@@ -1,14 +1,7 @@
 name: Scan images
 
+# Manual only — no push/pull_request CI triggers
 on:
-  # Trigger once a week on the main branch
-  schedule:
-  - cron: '0 0 * * 0' # Every Monday at midnight UTC
-
-  # Trigger the workflow on push to the main branch
-  push:
-    branches: [ main ]
-
   workflow_dispatch:
 
 jobs:

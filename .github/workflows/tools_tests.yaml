@@ -1,13 +1,6 @@
 name: GenerateResourceTool Tests
+# Manual only — no push/pull_request CI triggers
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'kagent/tools/**'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'kagent/tools/**'
   workflow_dispatch:
 jobs:
   similarity-tests:
